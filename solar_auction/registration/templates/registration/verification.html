@@ -1,0 +1,22 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Verifiy Email
+{% endblock %}
+
+{% block content %}
+  <div class="jumbotron">
+    {% if verified %}
+      <h2>Your email was successfully verified. Wait for an admin to approve your membership to participate in the auctions.</h2>
+    {% else %}
+      <h1>Please enter the OTP</h1>
+      <form method="POST">
+        {% csrf_token %}
+        <label for="one_time_password">OTP</label>
+        <input type="password" name="one_time_password">
+        <input type="submit" value="Submit">
+      </form>
+    {% endif %}
+  </div>
+{% endblock %}

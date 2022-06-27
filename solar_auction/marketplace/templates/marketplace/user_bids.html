@@ -1,0 +1,44 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Your Bids
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  {% comment %} <div class="jumbotron"> {% endcomment %}
+        {% if bids %}
+      <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Bid Amount</th>
+                        <th scope="col">Closing Date</th>
+                        
+                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bid in bids %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td><a href="{% url 'marketplace:catalogue_detail' bid.catalogue_name.slug %}">{{bid.catalogue_name.name}}</a></td>
+                            <td>{{bid.bid_amount}}</td>
+                            <td>{{bid.catalogue_name.end_date}}</td>
+                            
+                            
+                        </tr> 
+                        {% endfor %}
+                    </tbody>
+                </table>
+        {% else %}
+        <div class="jumbotron">
+        <p>You have not placed any bids on any items. Go to <a href="{% url 'marketplace:all_catalogue' %}">MarketPlace</a> to bid on an item.</p>
+        </div>
+        {% endif %}
+      
+  {% comment %} </div> {% endcomment %}
+</div>
+{% endblock %}

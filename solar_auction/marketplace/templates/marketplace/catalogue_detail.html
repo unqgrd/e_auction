@@ -1,0 +1,84 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Catalogue Detail
+{% endblock %}
+
+{% block content %}
+{% if catalogue.admin_approved or catalogue.owner == user %}
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Name: {{catalogue.name}}</h1>
+      <p>Details: {{catalogue.details}}</p>
+      {% if catalogue.starting_bid == 0 %} {% else %} <p>Base price: {{ catalogue.starting_bid }}</p>{% endif %}
+      <p>End date: {{catalogue.end_date}}</p>
+      
+      <p>{% if catalogue.auction_status %} 
+          On Auction 
+        {% else %} 
+          Auction over
+          {% if catalogue.owner == user %}
+            <p> Winner is : {{max_bidder}} </p>
+            <form class="small-form" action="{% url 'marketplace:notify_winner' catalogue.slug %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" name="">Notify Winner</button>
+            </form>
+          {% endif %}
+        {% endif %}</p>
+    </div>
+  </div>
+  <div class="container">
+     {% if file_present %}
+      <p> <a href="{}">Additional files</a></p>
+      {% endif %}
+  </div>
+  {% if catalogue.strategy == 'quotes' %}
+    <div class="container">
+      {% if catalogue.owner != user %}
+        <p>Your quote : {{current_user_high}}</p>
+      {% else %}
+      <p>Do something when the owner wants to see the quotes</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="container">
+      <h2> 
+        {% if catalogue.auction_status %} 
+            Current Winning Bid: {{max_bid}}
+        {% else %}
+          Winning Bid: {{max_bid}} 
+        {% endif %}
+      </h2>
+    </div>
+  
+  {% if catalogue.owner != user%}
+    <div class="container">
+      <p>Your bid : {{current_user_high}}</p>
+      {% if catalogue.auction_status and catalogue.admin_approved %}
+        <form action="{% url 'marketplace:add_bid' catalogue.slug %}" method="GET">
+        {% csrf_token %}
+        <input type="checkbox" required="True">I agree to the website's Terms and conditions.</input>
+        <br>
+        <input type="checkbox" required="True">I have read and understand the customer's requirements and i'm ready to fulfil them.</input>
+        <br>
+        <br>
+        <button type="submit" name="">Bid on this item</button>
+      </form>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endif %}
+  {% if catalogue.owner == user and not catalogue.admin_approved %}
+    <div class="container">
+      <p> Waiting admin approval </p>
+    </div>  
+  {% endif %}
+{% else %}
+    <div class="container">
+      <p>This item is waiting admin approval.</p>
+    </div>
+{% endif %}
+
+
+{% endblock %}

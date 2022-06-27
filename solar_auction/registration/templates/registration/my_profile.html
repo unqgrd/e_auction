@@ -1,0 +1,29 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  My Profile
+{% endblock %}
+<link rel="stylesheet" href="{% static 'registration/styles.css' %}">
+{% block content %}
+<div class="container">
+    <div class="">
+        
+        <p>Name: {{ userprofile.name }}</p>
+        <p>Phone number: {{ userprofile.phone }}</p>
+        <p>Email: {{ userprofile.user.email }}</p>
+        <p>Organization: {{ userprofile.organization_name }}</p>
+        <p>Address: {{ userprofile.address }}</p>
+        <p>City: {{ userprofile.city }}</p>
+        <p>State: {{ userprofile.state }}</p>
+        <p>Country: {{ userprofile.country }}</p>
+        <p>GSTIN: {{ userprofile.organization_gstin }}</p>
+        <p>CIN: {{ userprofile.organization_cin }}</p>
+    </div>
+        <form style="max-width: 7rem;" action="{% url 'registration:user_update' userprofile.id%}" method="GET">
+                                {% csrf_token %}
+                                <button id="approve-btn" type="submit">Edit</button>
+        </form>
+</div>
+
+{% endblock %}

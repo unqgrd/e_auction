@@ -1,0 +1,61 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+ {% load crispy_forms_filters %}
+
+{% block title %}
+  Add a new Item
+{% endblock %}
+
+{% block css %}
+{% comment %} <link rel="stylesheet" href="{% static 'admin/css/base.css' %}"> {% endcomment %}
+<link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
+
+<link rel="stylesheet" href="{% static 'marketplace/styles.css' %}">
+
+{% endblock %}
+{% block content %}
+    
+  <div class="container ">
+    <form class="large-form" method="POST">
+      {% csrf_token %}
+      {{ form.media }}
+      {% for field in form %}
+      <p>
+        {% if field == form.strategy %}
+        {% comment %} <p>
+          <label for="id_strategy">Strategy:</label>
+          <select name="strategy" id="id_strategy" class="strategy">
+            <option value="ascending">low to high</option>
+            <option value="descending">high to low</option>
+            <option value="quotes">Only get quotation</option>
+          </select>
+        </p> {% endcomment %}
+        <label for="id_strategy"> Bidding Strategy:</label>
+        <select name="strategy" class="strategy" id="id_strategy" multiple>
+          <option value="ascending">Low to High</option>
+          <option value="descending">High to Low</option>
+          <option value="quotes">Get Quotes</option>
+        </select>
+        {% else %}
+        {{field.label_tag}}
+        {{ field }}
+        
+        {% endif %}
+
+        {% if field == form.details or field == form.end_date or field == form.strategy %}
+        <hr>
+        {% endif %}
+
+      {% endfor %}
+
+      {{file_form|crispy}}
+      <br>
+      <br>
+      <button>Add</button>
+    </form>
+  </div>
+
+{% endblock %}
+{% block footer %}
+  
+{% endblock %}

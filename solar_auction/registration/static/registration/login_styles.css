@@ -1,0 +1,124 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+.navbar {
+    padding: 15px 10px;
+	background-color: #4a154b;
+	margin-bottom:0;
+    padding-bottom:0;
+	padding-top:0;
+    border: none;
+    border-radius: 0;
+    
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.navbar-brand img{
+	width:20%;
+}
+
+form {
+  margin: 3rem auto;
+  width: 90%;
+  
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  
+}
+
+.forms-control {
+  margin-bottom: 1rem;
+  
+}
+
+.forms-control input {
+  font: inherit;
+  padding: 0.25rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  display: block;
+  width: 20rem;
+}
+
+.forms-control input:focus {
+  border-color: #144a3f;
+  outline: none;
+  background-color: #f4eeff;
+}
+
+.forms-control label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+button {
+  cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  background-color: #21b394;
+  color: white;
+  border: 1px solid #21b394;
+  
+}
+
+button:hover,
+button:active {
+  background-color: #144a3f;
+  border-color: #144a3f;
+}
+
+.form-style input{
+	border:0;
+	height:50px;
+	border-radius:0;
+border-bottom:1px solid #ebebeb;	
+}
+.form-style input:focus{
+border-bottom:1px solid #007bff;	
+box-shadow:none;
+outline:0;
+background-color:#ebebeb;	
+}
+
+button{
+height:50px;	
+}
+
+.sideline {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+	color:#ccc;
+}
+.sideline:before,
+.sideline:after {
+    content: '';
+    border-top: 1px solid #ebebeb;
+    margin: 0 20px 0 0;
+    flex: 1 0 20px;
+}
+
+.sideline:after {
+    margin: 0 0 0 20px;
+}

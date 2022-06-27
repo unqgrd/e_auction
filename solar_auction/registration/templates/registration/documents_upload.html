@@ -1,0 +1,35 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Submit your documents
+{% endblock %}
+<link rel="stylesheet" href="{% static 'registration/styles.css' %}">
+{% block content %}
+<div class="container">
+  {% if not user_profile.documents_uploaded %}
+    <p>Please upload corresponding documents. File size less than 2MB.</p>  
+    <div class="form-style">
+      <form enctype="multipart/form-data" method="POST">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="form-group pb-3">
+                  <div style="margin-right:50px;">
+                    {{ field.label_tag }}
+                  </div>
+                  {{ field }}
+                  {{ field.errors }}
+                  
+                </div>
+
+        {% endfor %}
+              
+              <button>Save</button>
+          </form>
+    </div>
+  {% else %}
+    <p>Your documents have been uploaded. You will receieve an email once an admin approves your documents.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

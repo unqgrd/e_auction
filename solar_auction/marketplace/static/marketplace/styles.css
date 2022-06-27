@@ -1,0 +1,46 @@
+.strategy{
+  height: 44px;
+  border: none;
+  overflow: hidden;
+  margin-left:10px;
+}
+.strategy::-moz-focus-inner {
+  border: 0;
+}
+.strategy:focus {
+  outline: #4a1418;
+}
+.strategy option{
+  width: 100px;
+  font-size: 0.8em;
+  padding: 10px 0;
+  text-align: center;
+  margin-right: 35px;
+  display: inline-block;
+  cursor: pointer;
+  border:#21b394 solid 1px;
+  border-radius: 5px;
+  color: #144a3f;
+  
+}
+
+
+
+select option:hover 
+{
+  box-shadow: inset 50px 50px #21b394;
+}
+
+select option:checked {
+    box-shadow: inset 50px 50px #21b394;
+}
+
+#clockbox0{
+  background-color: rgb(173, 231, 231);
+  color: #4a1418;
+}
+
+#calendarbox0{
+  background-color: rgb(173, 231, 231);
+  color: #4a1418;
+}

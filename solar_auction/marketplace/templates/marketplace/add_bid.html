@@ -1,0 +1,48 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Add a new Bid
+{% endblock %}
+
+{% block content %}
+{% if user_profile.admin_approved %}
+
+<div class="container">
+  {% if strategy == 'quotes' %}
+      {% if user_bid_status == 'Bid' %}
+      <p style="text-align:center">Your current quoted amount is {{current_value}}.</p>
+    {% else %}
+      <p style="text-align:center">You have not quoted a price for this yet.</p>
+    {% endif %}
+  {% else %}
+    {% if user_bid_status == 'Bid' %}
+      <p style="text-align:center">Your current bid is {{current_value}}. Please make a {% if strategy == 'descending' %}lower{% elif strategy == 'ascending' %}higher{% endif %} bid.</p>
+    {% else %}
+      <p style="text-align:center">You have not made a bid on this item yet.</p>
+      {% if current_value %}
+      <p style="text-align:center">Please make a bid {% if strategy == 'descending' %}lower{% elif strategy == 'ascending' %}higher{% endif %} than {{current_value}}.</p>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+  <form method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+    <p>
+      {% if strategy == 'quotes' and field == form.bid_amount %}
+        <label for="id_bid_amount">Quotation Price</label>
+        {{ field }}
+        {{ field.errors }}
+      {% else %}
+        {{ field.label_tag }}
+        {{ field }}
+        {{ field.errors }}
+      {% endif %}
+    </p>
+
+    {% endfor %}
+    <button>Add</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

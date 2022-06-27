@@ -1,0 +1,39 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}
+   {{page_title}}
+{% endblock %}
+
+{% block content %} 
+    <div class="admin-content"> 
+        {% if CatalogueInfos %}
+                    <table class="table table-hover table-striped" id="sortable">
+                        <thead>
+                            <tr>
+                                
+                                <th scope="col" onclick="sortTable(0)">Name</th>
+                                <th scope="col" onclick="sortTable(1)">Owner</th>
+                                <th scope="col" onclick="sortTable(2)">Minimum Bid Amount</th>
+                                <th scope="col" onclick="sortTable(3)">End date</th>
+                                <th scope="col" onclick="sortTable(4)">Auction Status</th>
+                        
+                            </tr>
+                        </thead>
+                        <tbody>
+                         {% for catalogue_info in CatalogueInfos %}
+                            <tr>
+                                
+                                <td><a href="{% url 'administration:catalogue_detail' catalogue_info.slug %}">{{catalogue_info}}</a></td>
+                                <td>{{catalogue_info.owner.username}}</td>
+                                <td>{{catalogue_info.starting_bid}}</td>
+                            
+                                <td>{{catalogue_info.end_date}}</td>
+                                <td>{% if catalogue_info.auction_status %}On Auction{% else %}Auction Over{% endif %}</td>
+                                
+                            </tr> 
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+    </div>
+ {% endblock %}

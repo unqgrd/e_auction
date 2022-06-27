@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    
+    
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+	
+	<script src="{% url 'js_catalog' %}"></script>
+    <script src="{% static '/admin/js/core.js' %}"></script>
+
+    {% block css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'registration/styles.css' %}">
+    <link rel="icon" href="{% static 'images/logo.png' %}">
+    
+</head>
+
+<body>
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="navbar-header">
+			  <a class="navbar-brand" href="{% url 'registration:index' %}"><img src="{% static 'images/logo2.png' %}"  alt=""></a>
+		</div>
+		{% if not user.is_authenticated %}
+      
+			<ul class="nav navbar-nav navbar-right">
+        
+        <li>
+          <a class="navbar-link" style="color:white;" href="{% url 'registration:register'%}"> Register </a>
+        </li>
+				
+			</ul>
+		{% else %}
+      <ul class="nav navbar-nav navbar-left">
+        
+      </ul>
+			<ul class="nav navbar-nav navbar-right">
+        
+				<li>
+                    <a  style="color: #f7940a" href="{% url 'registration:profile_view' user.id %}"> Welcome {{user.username}} </a>
+                </li>
+			</ul>
+		{% endif %}
+	</nav>
+	
+		<div class="wrapper">
+			
+			<!-- Sidebar  -->
+      {% if user.is_authenticated %}
+        <nav id="sidebar">
+          <div class="sidebar-header">
+            {% if user.is_superuser %}
+              <h3>Admin Panel</h3>
+            {% else %}
+              <h3>Auction Portal</h3>
+            {% endif %}
+          </div>
+
+          <ul class="list-unstyled components">
+            {% if user.is_superuser %}
+              <li>
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Users</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                  <li>
+                    <a href="{% url 'administration:approved_users' %}">Approved Users</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'administration:users_waiting' %}">Waiting approval</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'administration:undocumented_users' %}">Email verified but documents not uploaded</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'administration:unverified_users' %}">Registered but email not verified</a>
+                  </li>
+                </ul>
+              </li>
+              
+              <li>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catalogues</a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                  <li>
+                    <a href="{% url 'administration:approved_catalogue' %}">Approved Catalogues</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'administration:catalogue_waiting' %}">Catalogues waiting approval</a>
+                  </li>
+                  
+                </ul>
+              </li>
+              <li>
+                <a href="{% url 'administration:finished_auctions' %}">Finished Auctions</a>
+              </li>
+              <li>
+                <a href="{% url 'admin:index' %}">Audit Log</a>
+              </li>
+            {% elif user_profile.admin_approved %}
+              <li>
+                <a href="{% url 'marketplace:all_catalogue' %}">MarketPlace</a>
+              </li>
+              <li>
+                <a href="{% url 'marketplace:user_catalogue' %}">My Catalogue</a>
+              </li>
+              <li>
+                <a href="{% url 'marketplace:user_bids' %}">My bids</a>
+              </li>
+              <li>
+                <a href="{% url 'marketplace:history_catalogue' %}">Auction history</a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{% url 'registration:upload_document' user.id %}">Upload documents</a>
+              </li>
+            {% endif %}
+          </ul>
+
+          <ul class="list-unstyled CTAs">
+            <li>
+              <a href="{% url 'logout' %}" class="download">Logout</a>
+            </li>
+            
+          </ul>
+        </nav>
+      {% endif %}
+			<!-- Page Content  -->
+			<div id="content">
+
+				<nav class="navbar navbar-expand-lg navbar-light bg-light">
+					<div class="container-fluid">
+
+						
+						
+
+						
+					</div>
+				</nav>
+				{% block content %}
+				{% endblock %}
+
+			</div>
+		</div>
+	
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+<script>
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("sortable");
+  console.log(table.rows)
+  switching = true;
+  //Set the sorting direction to ascending:
+  dir = "asc"; 
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /*check if the two rows should switch place,
+      based on the direction, asc or desc:*/
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      //Each time a switch is done, increase this count by 1:
+      switchcount ++;      
+    } else {
+      /*If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again.*/
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+
+    
+</body>
+
+</html>

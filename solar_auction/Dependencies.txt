@@ -1,0 +1,13 @@
+Dependencies
+
+For storing Phone numbers
+https://github.com/stefanfoulis/django-phonenumber-field 
+
+
+Django Recaptcha
+pip install django-recaptcha
+
+
+auditlog
+
+pip install django-crispy-forms

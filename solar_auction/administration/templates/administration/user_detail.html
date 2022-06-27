@@ -1,0 +1,28 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}
+   {{page_title}}
+{% endblock %}
+
+{% block content %} 
+    <div class="admin-content"> 
+                <p>Username: {{userinfo.user.username}}</p>
+                <p>Contact Person: {{userinfo.contact_person}}</p>
+                <p>Phone: {{userinfo.phone}}</p>
+                <p>Admin Approved: {{userinfo.admin_approved}}</p>    
+                
+                    <form style="display: inline;" action="{% url 'administration:user_action' pk=userinfo.id %}" method=POST>
+                        {% csrf_token %}
+                        {% if userinfo.admin_approved %}
+                            <button id="approve-btn" name="remove" type="submit">Withdraw Approval</button>
+                        {% elif userinfo.documents_uploaded %}
+                            <button id="approve-btn" name="approve" type="submit">Approve</button>
+                            <button id="approve-btn" name="reject" type="submit">Reject documents</button>
+                        {% else %}
+                            <button id="approve-btn" name="notify" type="submit">Send reminder</button>
+                            <button id="approve-btn" name="delete" type="submit">Delete User</button>
+                        {% endif %}
+                    </form>
+                
+    </div>
+ {% endblock %}

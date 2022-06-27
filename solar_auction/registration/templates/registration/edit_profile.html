@@ -1,0 +1,30 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Edit my Profile
+{% endblock %}
+<link rel="stylesheet" href="{% static 'registration/styles.css' %}">
+{% block content %}
+<div class="container">
+  <div class="form-style">
+    <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="form-group pb-3">
+                <div style="margin-right:50px;">
+                  {{ field.label_tag }}
+                </div>
+                {{ field }}
+                {{ field.errors }}
+                
+              </div>
+
+      {% endfor %}
+            
+            <button>Save</button>
+        </form>
+  </div>
+</div>
+
+{% endblock %}

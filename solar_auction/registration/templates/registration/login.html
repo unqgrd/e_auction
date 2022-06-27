@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Login Page</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    
+    
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+	
+	  <script src="{% url 'js_catalog' %}"></script>
+    <script src="{% static '/admin/js/core.js' %}"></script>
+
+    
+    <link rel="stylesheet" href="{% static 'registration/login_styles.css' %}">
+    <link rel="icon" href="{% static 'images/logo.png' %}">
+    
+</head>
+
+<body>
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="navbar-header">
+			  <a class="navbar-brand" href="{% url 'registration:index' %}"><img src="{% static 'images/logo2.png' %}"  alt=""></a>
+		</div>
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a class="navbar-link" style="color: #f7940a" href="{% url 'registration:register'%}"> Register </a>
+        </li>
+		</ul>
+  </nav>
+      
+  <div class="row m-5 no-gutters shadow-lg">
+		<div class="col-md-6 d-none d-md-block">
+			<img src="{% static 'images/banner.jpg' %}" class="img-fluid" style="min-height:100%;" />
+		</div>
+		<div class="col-md-6 bg-white p-5">
+			<h3 class="pb-3">Login Here</h3>
+			  <div class="form-style">
+				  <form  action="{% url 'registration:user_login' %}" method="POST">
+					  {% csrf_token %}
+					
+					  <div class="form-group pb-3">
+					    <label for="username">Username</label>
+					    <input class="form-control" type="text" name="username">
+            </div>  
+            <div class="form-group pb-3">
+              <label for="password">Password</label>
+					    <input class="form-control" type="password" name="password">
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <div><a href="{% url 'registration:register' %}">Not registered? Go register</a></div>
+              <div><a href="{% url 'password_reset' %}">Forgot Password?</a></div>
+            </div>
+            <br>
+            <div class="pb-2">
+					    <button type="submit" value="Login">Login</button>
+            </div>
+				  </form>
+			  </div>
+		</div>
+	</div>
+
+
+
+
+</body>
+
+</html>
