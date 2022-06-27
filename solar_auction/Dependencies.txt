@@ -2,12 +2,12 @@ Dependencies
 
 For storing Phone numbers
 https://github.com/stefanfoulis/django-phonenumber-field 
-
+pip install django-phonenumber-field[phonenumbers]
 
 Django Recaptcha
 pip install django-recaptcha
 
 
-auditlog
+auditlog: pip install django-auditlog
 
-pip install django-crispy-forms
+crispy form: pip install django-crispy-forms
