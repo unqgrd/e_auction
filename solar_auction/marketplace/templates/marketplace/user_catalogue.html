@@ -17,21 +17,21 @@
             
             {% comment %} <h2><li><a href="{% url 'marketplace:catalogue_detail' catalogue.slug %}">{{catalogue.name}}</a></li></h2> {% endcomment %}
                 {% if catalogues %}
-                <table class="table table-hover table-striped">
+                <table class="table table-hover table-striped" id="sortable">
                     <thead>
                         <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">End date</th>
-                        <th scope="col">Starting Bid Amount</th>
-                        <th scope="col">Admin Approved</th>
-                        <th scope="col">Auction Status</th>
+                        
+                        <th scope="col" onclick="sortTable(0)">Name</th>
+                        <th scope="col" onclick="sortTable(1)">End date</th>
+                        <th scope="col" onclick="sortTable(2)">Starting Bid Amount</th>
+                        <th scope="col" onclick="sortTable(3)">Admin Approved</th>
+                        <th scope="col" onclick="sortTable(4)">Auction Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for catalogue in catalogues %}
                         <tr>
-                            <th scope="row">{{forloop.counter}}</th>
+                            
                             <td><a href="{% url 'marketplace:catalogue_detail' catalogue.slug %}">{{catalogue.name}}</a></td>
                             <td>{{catalogue.end_date}}</td>
                             <td>{{catalogue.starting_bid}}</td>

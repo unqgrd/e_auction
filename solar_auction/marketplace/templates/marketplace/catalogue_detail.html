@@ -29,9 +29,11 @@
     </div>
   </div>
   <div class="container">
-     {% if file_present %}
-      <p> <a href="{}">Additional files</a></p>
-      {% endif %}
+    {% if file_present %}
+    <p>Additional customer requirements</p>
+    <embed src="{{catalogue_file.file_name.url}}" width="1000" height="375" type="application/pdf">
+      
+    {% endif %}
   </div>
   {% if catalogue.strategy == 'quotes' %}
     <div class="container">

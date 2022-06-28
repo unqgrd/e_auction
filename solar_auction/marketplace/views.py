@@ -1,3 +1,5 @@
+from .forms import CatalogueForm, BidForm, CatalogueFileForm
+from .models import Catalogue, Bid, CatalogueFile
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, TemplateView
 from django.utils.decorators import method_decorator
@@ -11,9 +13,8 @@ from solar_auction.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from registration.models import UserProfileInfo
 from django.utils import timezone
+from django.views.decorators.clickjacking import xframe_options_exempt
 
-from .models import Catalogue, Bid, CatalogueFile
-from .forms import CatalogueForm, BidForm, CatalogueFileForm
 # Create your views here.
 
 
@@ -52,6 +53,7 @@ class AuctionOverView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(xframe_options_exempt, name='dispatch')
 class CatalogueDetailView(DetailView):
     model = Catalogue
     template_name = 'marketplace/catalogue_detail.html'
@@ -82,7 +84,7 @@ class CatalogueDetailView(DetailView):
             catalogue_file = CatalogueFile.objects.get(
                 catalogue_name=context['catalogue'])
             context['file_present'] = True
-            context['file_name'] = catalogue_file.file_name
+            context['catalogue_file'] = catalogue_file
         except:
             context['file_present'] = False
         return context

@@ -9,13 +9,13 @@
 <div class="container">
   {% comment %} <div class="jumbotron"> {% endcomment %}
         {% if bids %}
-      <table class="table table-hover table-striped">
+      <table class="table table-hover table-striped" id="sortable">
                     <thead>
                         <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Bid Amount</th>
-                        <th scope="col">Closing Date</th>
+                        
+                        <th scope="col" onclick="sortTable(0)" >Name</th>
+                        <th scope="col" onclick="sortTable(1)">Bid Amount</th>
+                        <th scope="col" onclick="sortTable(2)">Closing Date</th>
                         
                         
                         </tr>
@@ -23,7 +23,7 @@
                     <tbody>
                         {% for bid in bids %}
                         <tr>
-                            <th scope="row">{{forloop.counter}}</th>
+                            
                             <td><a href="{% url 'marketplace:catalogue_detail' bid.catalogue_name.slug %}">{{bid.catalogue_name.name}}</a></td>
                             <td>{{bid.bid_amount}}</td>
                             <td>{{bid.catalogue_name.end_date}}</td>
