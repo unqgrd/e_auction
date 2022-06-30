@@ -34,7 +34,7 @@
 		</div>
     <ul class="nav navbar-nav navbar-right">
         <li>
-          <a class="navbar-link" style="color: #f7940a" href="{% url 'registration:register'%}"> Register </a>
+          <a class="navbar-link" style="color:#fff;" href="{% url 'registration:register'%}"> Register </a>
         </li>
 		</ul>
   </nav>
@@ -48,7 +48,13 @@
 			  <div class="form-style">
 				  <form  action="{% url 'registration:user_login' %}" method="POST">
 					  {% csrf_token %}
-					
+            {% if messages %}
+              <ul class="messages">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+              </ul>
+{% endif %}
 					  <div class="form-group pb-3">
 					    <label for="username">Username</label>
 					    <input class="form-control" type="text" name="username">

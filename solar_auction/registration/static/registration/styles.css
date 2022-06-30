@@ -65,7 +65,7 @@ a:focus {
     min-width: 250px;
     max-width: 250px;
     background: #4a154b;
-    color:#f7940a;
+    color:#fff;
     transition: all 0.3s;
     margin:0;
 }

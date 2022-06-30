@@ -86,6 +86,10 @@ button:active {
   border-color: #144a3f;
 }
 
+ul li{
+  list-style: none;
+}
+
 .form-style input{
 	border:0;
 	height:50px;
@@ -122,3 +126,4 @@ height:50px;
 .sideline:after {
     margin: 0 0 0 20px;
 }
+

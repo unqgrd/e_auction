@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from registration.models import UserProfileInfo
+from registration.models import UserProfileInfo, Documents
 from marketplace.models import Catalogue
 from django.http import Http404, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
@@ -11,6 +11,7 @@ from solar_auction.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from django.utils import timezone
 from auditlog.models import LogEntry
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 
 @staff_member_required
@@ -37,6 +38,7 @@ class ApprovedUsersView(ListView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
+@method_decorator(xframe_options_exempt, name='dispatch')
 class UnApprovedUsersView(ListView):
     model = UserProfileInfo
     template_name = 'administration/users.html'
@@ -44,13 +46,14 @@ class UnApprovedUsersView(ListView):
 
     def get_queryset(self):
         try:
-            return UserProfileInfo.objects.filter(admin_approved=False)
+            return UserProfileInfo.objects.filter(admin_approved=False, documents_uploaded=True)
         except:
             raise Http404()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Users waiting approval'
+
         return context
 
 
@@ -95,6 +98,20 @@ class UserProfileView(DetailView):
     model = UserProfileInfo
     template_name = 'administration/user_detail.html'
     context_object_name = 'userinfo'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        try:
+
+            user_documents = Documents.objects.get(user=kwargs['object'].user)
+
+            context['user_file_present'] = True
+            context['user_files'] = user_documents
+        except:
+            context['user_file_present'] = False
+
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -165,7 +182,6 @@ class EmailUnverifiedView(ListView):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Awaiting verification'
         return context
-
 
 
 @staff_member_required

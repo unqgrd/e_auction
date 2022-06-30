@@ -1,7 +1,7 @@
 {% extends 'registration/base.html' %}
 {% load static %}
 {% block title %}
-   {{page_title}}
+   User details
 {% endblock %}
 
 {% block content %} 
@@ -11,6 +11,22 @@
                 <p>Phone: {{userinfo.phone}}</p>
                 <p>Admin Approved: {{userinfo.admin_approved}}</p>    
                 
+                <div class="container">
+                    {% if user_file_present %}
+                        <p>Proof of Identity</p>
+                        <embed src="{{user_files.proof_of_identity.url}}" width="1000" height="375" type="application/pdf">
+                        <br>
+                        <br>
+                        <p>Proof of Address</p>
+                        <embed src="{{user_files.proof_of_address.url}}" width="1000" height="375" type="application/pdf">
+                        <br>
+                        <br>
+                        <p>Proof of GSTIN</p>
+                        <embed src="{{user_files.proof_of_gst.url}}" width="1000" height="375" type="application/pdf">
+        
+                    {% endif %}
+                </div>
+
                     <form style="display: inline;" action="{% url 'administration:user_action' pk=userinfo.id %}" method=POST>
                         {% csrf_token %}
                         {% if userinfo.admin_approved %}

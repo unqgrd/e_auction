@@ -14,6 +14,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
+
 import random
 
 
@@ -34,7 +36,7 @@ def index(request):
     try:
         user_profile = UserProfileInfo.objects.get(pk=request.user.id)
         user_status = User.objects.get(pk=request.user.id).is_staff
-        
+
     except:
         user_profile = {}
     if user_profile:
@@ -98,7 +100,9 @@ def user_login(request):
             else:
                 return HttpResponse('Account inactive')
         else:
-            return HttpResponse('Invalid login Details')
+            messages.info(
+                request, 'Invalid details!')
+            return render(request, 'registration/login.html')
 
     else:
         return render(request, 'registration/login.html')
