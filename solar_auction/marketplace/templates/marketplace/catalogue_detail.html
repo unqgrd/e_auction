@@ -13,7 +13,7 @@
       <p>Details: {{catalogue.details}}</p>
       {% if catalogue.starting_bid == 0 %} {% else %} <p>Base price: {{ catalogue.starting_bid }}</p>{% endif %}
       <p>End date: {{catalogue.end_date}}</p>
-      
+      <p>Bidding Strategy: {% if catalogue.strategy == 'ascending' %}Low to High{% elif catalogue.strategy == 'descending' %}High to Low{% else %}Get Quotations{% endif %}</p>
       <p>{% if catalogue.auction_status %} 
           On Auction 
         {% else %} 

@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from registration.models import UserProfileInfo, Documents
-from marketplace.models import Catalogue
+from marketplace.models import Catalogue, CatalogueFile
 from django.http import Http404, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
@@ -72,6 +72,7 @@ class ApprovedCatalogueView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Approved Catalogue'
+
         return context
 
 
@@ -119,6 +120,17 @@ class AdminCatalogueView(DetailView):
     model = Catalogue
     template_name = 'administration/catalogue_detail.html'
     context_object_name = 'catalogue'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            catalogue_file = CatalogueFile.objects.get(
+                catalogue_name=context['catalogue'])
+            context['file_present'] = True
+            context['catalogue_file'] = catalogue_file
+        except:
+            context['file_present'] = False
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -198,6 +210,16 @@ def user_action(request, pk):
         subject = "Membership Suspended"
         message = "You have been suspended from participating on our website."
         current_user.save()
+    elif 'reject' in request.POST:
+        user_documents = Documents.objects.get(user=User.objects.get(pk=pk))
+        current_user.documents_uploaded = False
+        user_documents.delete()
+        subject = "Documents rejected"
+        message = "Your uploaded documents were rejected by an administrator due to a discrepancy."
+        current_user.save()
+    elif 'notify' in request.POST:
+        subject = "Documents requested"
+        message = "You need to upload relevant documents on our website to participate further."
     elif 'delete' in request.POST:
         subject = "Membership Banned"
         message = "You have been permanently suspended from participating on our website."

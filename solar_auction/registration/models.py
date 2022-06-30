@@ -46,3 +46,4 @@ class Documents(models.Model):
 
 
 auditlog.register(UserProfileInfo)
+auditlog.register(Documents)

@@ -12,7 +12,8 @@
             <input class="form-control mr-sm-2" type="search" placeholder="Search Marketplace" aria-label="Search" name="search" >
           
           </form>
-        
+          <br>
+          <br>
             {% if user_profile.admin_approved %}
                     {% if catalogues %}
                     <table class="table table-hover table-striped" id="sortable">
@@ -34,7 +35,7 @@
                             <td>{{catalogue.end_date}}</td>
                             <td>{{catalogue.starting_bid}}</td>
                             
-                            <td>{{catalogue.strategy}}</td>
+                            <td>{% if catalogue.strategy == 'ascending' %}Low to High{% elif catalogue.strategy == 'descending' %}High to Low{% else %}Get Quotations{% endif %}</td>
                             <td>{% if catalogue.owner == user %}Owner{% endif %}</td>
                         </tr> 
                         {% endfor %}
