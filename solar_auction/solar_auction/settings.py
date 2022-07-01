@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'auditlog',
     'crispy_forms',
     'registration',
-
+    'razorpay',
+    'payments',
     'marketplace',
 ]
 
@@ -160,3 +161,8 @@ RECAPTCHA_PRIVATE_KEY = '6LdUxlMgAAAAAIzikMXXkhTS4MjGVcsXoGryv-HS'
 
 # CSP
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Razorpay
+
+RAZORPAY_KEY_ID = 'rzp_test_tT2hzmFfmtMOvu'
+RAZORPAY_KEY_SECRET = 'hwuq9erOwu8StxjSaktOwOi2'

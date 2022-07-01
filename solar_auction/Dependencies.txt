@@ -11,3 +11,6 @@ pip install django-recaptcha
 auditlog: pip install django-auditlog
 
 crispy form: pip install django-crispy-forms
+
+
+Razorpay  : pip install razorpay
