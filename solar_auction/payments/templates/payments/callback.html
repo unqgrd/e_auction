@@ -1,0 +1,13 @@
+{% extends 'registration/base.html' %}
+{% block content %}
+<div class="text-center" style="margin-top:20%">
+    {% if status == "Success" %}
+    <h2>THANKS YOUR PAYMENT HAS BEEN RECEIVED</h2>
+    <a href="{% url 'marketplace:catalogue_detail' catalogue.slug %}">Go back</a>
+    {% else %}
+    <h2>SORRY, YOUR PAYMENT HAS FAILED</h2>
+    
+    {% endif %}
+    <a href="{% url 'marketplace:all_catalogue' %}">Go back</a>
+</div>
+{% endblock %}

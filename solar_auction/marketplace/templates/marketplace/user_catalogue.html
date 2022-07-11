@@ -4,17 +4,31 @@
 {% block title %}
   Your Catalogue
 {% endblock %}
-
+{% block css %}
+    <link rel="stylesheet" href="{% static 'marketplace/styles.css' %}">
+{% endblock %}
 {% block content %}
+
+    
+    
     <div class="container">
+        
+        
     {% comment %} <div class="jumbotron"> {% endcomment %}
-        <form class="form-inline my-2 my-lg-0" style="direction:rtl; max-width:17rem; " action="{% url 'marketplace:search' %}" method="GET">
+        <form class="form-inline my-2 my-lg-0 search-form inline-form"  action="{% url 'marketplace:search' %}" method="GET">
             
-            <input class="form-control mr-sm-2" type="search" placeholder="Search Marketplace" aria-label="Search" name="search" >
+            <input class="form-control mr-sm-2 search-box" type="search" placeholder="Search Marketplace" aria-label="Search" name="search" >
           
         </form>
+        {% if user_profile.admin_approved %}
+            <form class="small-form inline-form add-item-form" action="{% url 'marketplace:add_item' %}" enctype="multipart/form-data" method="GET">
+                {% csrf_token %}
+                <button type="submit" name="">Add a new item</button>
+            </form>
+        {% endif %}
         <br>
         <br>
+    
         {% if user_profile.admin_approved %}
             
             {% comment %} <h2><li><a href="{% url 'marketplace:catalogue_detail' catalogue.slug %}">{{catalogue.name}}</a></li></h2> {% endcomment %}
@@ -44,7 +58,7 @@
                     </tbody>
                 </table>
                 {% else %}
-                <div class="jumbotron">
+                <div class="container">
                 <p>You do not own any catalogues.</p>
                 </div>
                 {% endif %}
@@ -53,13 +67,32 @@
         {% endif %}
     {% comment %} </div> {% endcomment %}
     </div>
-    <div class="container">
-    {% if user_profile.admin_approved %}
-        <form class="small-form" action="{% url 'marketplace:add_item' %}" enctype="multipart/form-data" method="GET">
-            {% csrf_token %}
-            <button type="submit" name="">Add a new item</button>
-        </form>
-    {% endif %}
-    </div>
-
+{% if is_paginated %}
+        <div class="pagination">
+            
+                {% if page_obj.has_previous %}
+                    <a href="?paginate_by={{ paginate_by }}&page=1"> &laquo First &nbsp </a>
+                    <a href="?paginate_by={{ paginate_by }}&page={{ page_obj.previous_page_number }}"> previous &nbsp </a>
+                {% endif %}
+                
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                
+                {% if page_obj.has_next %}
+                    <a href="?paginate_by={{ paginate_by }}&page={{ page_obj.next_page_number }}"> &nbsp next &nbsp </a>
+                    <a href="?paginate_by={{ paginate_by }}&page={{ page_obj.paginator.num_pages }}"> Last &raquo  </a>
+                {% endif %}
+            
+        </div>
+    {% endif %} 
+    <br>
+    
+<form action="" method="get">
+    <select name="paginate_by">
+        <option>2</option>
+        <option>3</option>
+        <option selected>5</option>
+        <option>10</option>
+    </select>
+    <input type="submit" value="Results/page">
+</form>
 {% endblock %}

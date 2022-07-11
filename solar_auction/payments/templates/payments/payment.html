@@ -1,0 +1,40 @@
+{% extends 'registration/base.html' %}
+{% block title %}
+    Proceed to Payment
+{% endblock %}
+{% load static %}
+{% block content %}
+        <a href="{% url 'marketplace:catalogue_detail' catalogue.slug %}">back</a>
+    
+        <form method="POST">
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            <script>
+            var options = {
+                key: "{{razorpay_key}}",
+                amount: "{{amount}}", 
+                currency: "INR",
+                name: "{{catalogue.name}}",
+                description: "Token fee",
+                image: "{% static 'images/logo.png'%}",
+                order_id: "{{order.order_id}}",
+                callback_url: "{{callback_url}}",
+                redirect: true,
+                prefill: {
+                    "name": "{{user_profile.name}}",
+                    "email": "{{user_profile.user.email}}",
+                    "contact": "{{user_profile.phone}}"
+                 },
+                notes: {
+                    "address": "Razorpay Corporate Office"
+                },
+                theme: {
+                    "color": "#4a154b"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+            </script>
+            <input type="hidden" custom="Hidden Element" name="hidden">
+        </form>
+    
+{% endblock %}

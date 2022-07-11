@@ -175,16 +175,7 @@ a.article:hover {
     }
 }
 
-form {
-  margin: 3rem auto;
-  width: 90%;
-  
-  padding: 1rem;
-  border-radius: 12px;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  
-}
+
 
 button {
   cursor: pointer;
@@ -256,4 +247,29 @@ th, td {
 
 tr:nth-child(even) {
   background-color: #f2f2f2
+}
+
+.payment-button {
+    display: block;
+    width: 115px;
+    /* height: 2px; */
+    background: #21b394;
+    padding: 2px;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+    
+    /* line-height: 25px; */
+}
+.reject-button {
+    display: block;
+    width: 115px;
+    height: 25px;
+    background:red;
+    padding: 8px;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+    
+    /* line-height: 25px; */
 }

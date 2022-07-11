@@ -1,0 +1,94 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Catalogue Detail
+{% endblock %}
+
+{% block content %}
+    {% if catalogue.admin_approved or catalogue.owner == user %}
+    <!-- Show the catalogue details here if it is approved or it is owned by the viewer -->
+        <h1>Name: {{catalogue.name}}</h1>
+        <p>Details: {{catalogue.details}}</p>
+        {% if catalogue.starting_bid  %}
+            <p>Base price: {{ catalogue.starting_bid }}</p>
+        {% endif %}
+        <p>End date: {{catalogue.end_date}}</p>
+        <p>Bidding Strategy: 
+            {% if catalogue.strategy == 'ascending' %}
+                Low to High
+            {% elif catalogue.strategy == 'descending' %}
+                High to Low
+            {% else %}
+                Get Quotations
+            {% endif %}
+        </p>
+        <p>{% if catalogue.auction_status %}On Auction{% else %}Auction over{% endif %}</p>
+        {% if file_present %}
+            <button id="button" onclick="showhide()">Additional customer requirements</button>
+            <br>
+            <br>
+            <div class="container" id="toggalable" style="display:none;">
+                <embed src="{{catalogue_file.file_name.url}}" width="1000" height="375" type="application/pdf">
+            </div>
+        {% endif %}
+        
+    {% endif %}
+
+
+    {% if catalogue.admin_approved %}
+    <!-- If catalogue is approved  -->
+        {% if catalogue.owner == user %}
+        <!-- If the viewer is owner -->
+            {% if catalogue.auction_status %}
+            <!-- If the auction is still ongoing -->
+                {% if catalogue.strategy == 'quotes' %}
+                <!-- Show the owner all the quotes here -->
+                {% else %}
+                <!-- Show the owner highest bids here -->
+                    Current Winning Bid: {{max_bid}}
+                {% endif %}
+            {% else %}
+            <!-- If the auction is over -->
+                {% if catalogue.strategy == 'quotes' %}
+                <!-- Show the owner all the quotes here -->
+                <!-- Allow the owner to contact the desired person-->  
+                {% else %}
+                <!-- Show the owner highest bids here -->
+                <!-- Allow the owner to contact the highest bidder-->  
+                {% endif %}
+            {% endif %}
+        {% else %}
+        <!-- If the viewer is a bidder -->
+            {% if catalogue.auction_status %}
+            <!-- Allow the bidders to see the highest bids,their highestbid and allow them to bid -->
+                <h2>Current Winning Bid: {{max_bid}}</h2>
+                
+                
+                {% if catalogue.broker_fees and not payment %}
+                <!-- If there is a token fee and customer has not paid then make them pay -->
+                    <a class="payment-button" href="{% url 'payments:payments_home' catalogue.slug%}">Pay token fee</a>
+                {% else %}
+                <!-- If there is no token fee or token fee already paid then allow the bidders to bid -->
+                    <p>Your bid : {{current_user_high}}</p>
+                    <form action="{% url 'marketplace:add_bid' catalogue.slug %}" method="GET">
+                        {% csrf_token %}
+                        <input type="checkbox" required="True">I agree to the website's Terms and conditions.</input>
+                        <br>
+                        <input type="checkbox" required="True">I have read and understand the customer's requirements and i'm ready to fulfil them.</input>
+                        <br>
+                        <br>
+                        <button type="submit" name="">Bid on this item</button>
+                    </form>
+                {% endif %}
+            {% else %}
+            <!-- Allow the bidders to see the winning bid -->
+            {% endif %}
+        {% endif %}
+    {% else %}
+    <!-- If catalogue is not approved show appropriate message  -->
+        <p>Awaiting admin approval</p>
+    {% endif %}
+    
+
+{% endblock %}

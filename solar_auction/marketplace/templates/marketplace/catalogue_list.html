@@ -1,15 +1,20 @@
 {% extends 'registration/base.html' %}
 {% load static %}
+
 {% block title %}
   MarketPlace
+{% endblock %}
+{% block css %}
+
+    <link rel="stylesheet" href="{% static 'marketplace/styles.css' %}">
 {% endblock %}
 {% block content %}
     <div class="container">
         {% comment %} <div class="jumbotron"> {% endcomment %}
             
-          <form class="form-inline my-2 my-lg-0" style="direction:rtl; max-width:17rem; " action="{% url 'marketplace:search' %}" method="GET">
+          <form class="form-inline my-2 my-lg-0 search-form" action="{% url 'marketplace:search' %}" method="GET">
             
-            <input class="form-control mr-sm-2" type="search" placeholder="Search Marketplace" aria-label="Search" name="search" >
+            <input class="form-control mr-sm-2 search-box" type="search" placeholder="Search Marketplace" aria-label="Search" name="search" >
           
           </form>
           <br>
@@ -28,6 +33,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
                          {% for catalogue in catalogues %}
                         <tr>
                             
@@ -50,6 +56,32 @@
         {% comment %} </div> {% endcomment %}
     </div>
 
-
-
+{% if is_paginated %}
+        <div class="pagination">
+            
+                {% if page_obj.has_previous %}
+                    <a href="?paginate_by={{ paginate_by }}&page=1"> &laquo First &nbsp </a>
+                    <a href="?paginate_by={{ paginate_by }}&page={{ page_obj.previous_page_number }}" > previous &nbsp </a>
+                {% endif %}
+                
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                
+                {% if page_obj.has_next %}
+                    <a href="?paginate_by={{ paginate_by }}&page={{ page_obj.next_page_number }}" > &nbsp next &nbsp </a>
+                    <a href="?paginate_by={{ paginate_by }}&page={{ page_obj.paginator.num_pages }}"> Last &raquo  </a>
+                {% endif %}
+            
+        </div>
+    {% endif %} 
+    <br>
+    
+<form action="" method="get">
+    <select name="paginate_by">
+        <option>2</option>
+        <option>3</option>
+        <option selected>5</option>
+        <option>10</option>
+    </select>
+    <input type="submit" value="Results/page">
+</form>
 {% endblock %}

@@ -35,6 +35,19 @@ select option:checked {
     box-shadow: inset 50px 50px #21b394;
 }
 
+.search-form{
+  direction:ltr; 
+  /* max-width:17rem;  */
+  border-radius: 4rem;
+}
+.inline-form{
+  display: inline;
+}
+.add-item-form{
+  /* display: flex; */
+  flex-direction: column;
+  align-items: flex-end;
+}
 #clockbox0{
   background-color: rgb(173, 231, 231);
   color: #4a1418;
@@ -44,3 +57,4 @@ select option:checked {
   background-color: rgb(173, 231, 231);
   color: #4a1418;
 }
+

@@ -235,6 +235,10 @@ def catalogue_action(request, slug):
     catalogue_owner = UserProfileInfo.objects.get(
         pk=catalogue.owner.id)
     catalogue_owner_email = User.objects.get(pk=catalogue_owner.id).email
+    if 'token_amount' in request.POST:
+        if request.POST['token_amount']:
+            catalogue.broker_fees = request.POST['token_amount']
+            catalogue.save()
     if 'approve' in request.POST:
         catalogue.admin_approved = True
         subject = "Catalogue Approved"

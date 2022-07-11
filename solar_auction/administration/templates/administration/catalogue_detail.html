@@ -6,13 +6,14 @@
 
 {% block content %} 
     <div class="admin-content"> 
-        <p>Catalogue Name: {{catalogue.name}}</p>
+                <p>Catalogue Name: {{catalogue.name}}</p>
                 <p>Detail: {{catalogue.details}}</p>
                 <p>Posted by: {{catalogue.owner}}</p>
                 <p>Ends on: {{catalogue.end_date}}</p>
                 <p>Starting bid: {{catalogue.starting_bid}}</p>
                 <p>Bidding strategy: {% if catalogue.strategy == 'ascending' %}Low to High{% elif catalogue.strategy == 'descending' %}High to Low{% else %}Get Quotations{% endif %}</p>
                 <p>Admin Approved: {{catalogue.admin_approved}}</p>    
+                <p>Broker fee: {% if catalogue.broker_fees %}{{catalogue.broker_fees}}{% else %}Nil{% endif %}</p>
                 <div class="container">
                     {% if file_present %}
                         <p>Additional customer requirements</p>
@@ -22,14 +23,19 @@
                     </div>
                 <br>
                 <br>
+                
                 <form style="display: inline;" action="{% url 'administration:catalogue_action' slug=catalogue.slug%}" method=POST>
                         {% csrf_token %}
                         {% if catalogue.admin_approved %}
                             <button id="approve-btn" name="remove" type="submit">Withdraw Approval</button>
                         {% else %}
-                            <button id="approve-btn" name="approve" type="submit">Approve</button>
+                        
+                            <input type="number" name="token_amount"  placeholder="Brokerage" />
+                            <button id="approve-btn" name="approve" type="submit" >Approve</button>
                             <button id="approve-btn" name="delete" type="submit">Delete Catalogue</button>
+                            
                         {% endif %}
-                    </form>
+                </form>
     </div>
+    
  {% endblock %}

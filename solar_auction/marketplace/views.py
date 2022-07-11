@@ -14,7 +14,9 @@ from django.core.mail import send_mail
 from registration.models import UserProfileInfo
 from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
-
+from payments.models import Order
+from payments.constants import PaymentStatus
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 # Create your views here.
 
 
@@ -23,6 +25,7 @@ class CatalogueListView(ListView):
     model = Catalogue
     context_object_name = 'catalogues'
     template_name = 'marketplace/catalogue_list.html'
+    paginate_by = 5
 
     def get_queryset(self):
         return Catalogue.objects.filter(admin_approved=True, end_date__gt=timezone.now()).order_by('end_date')
@@ -31,8 +34,15 @@ class CatalogueListView(ListView):
         context = super().get_context_data(**kwargs)
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         context['user_profile'] = current_user
-
+        if self.request.GET.get('paginate_by'):
+            context['paginate_by'] = self.request.GET.get('paginate_by')
+        else:
+            context['paginate_by'] = self.paginate_by
         return context
+
+    def get_paginate_by(self, queryset):
+
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -40,6 +50,7 @@ class AuctionOverView(ListView):
     model = Catalogue
     context_object_name = 'catalogues'
     template_name = 'marketplace/catalogue_list.html'
+    paginate_by = 5
 
     def get_queryset(self):
         return Catalogue.objects.filter(admin_approved=True, end_date__lt=timezone.now()).order_by('end_date')
@@ -48,15 +59,22 @@ class AuctionOverView(ListView):
         context = super().get_context_data(**kwargs)
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         context['user_profile'] = current_user
-
+        if self.request.GET.get('paginate_by'):
+            context['paginate_by'] = self.request.GET.get('paginate_by')
+        else:
+            context['paginate_by'] = self.paginate_by
         return context
+
+    def get_paginate_by(self, queryset):
+
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(xframe_options_exempt, name='dispatch')
 class CatalogueDetailView(DetailView):
     model = Catalogue
-    template_name = 'marketplace/catalogue_detail.html'
+    template_name = 'marketplace/catalogue_detail_new.html'
     context_object_name = 'catalogue'
 
     def get_context_data(self, **kwargs):
@@ -64,22 +82,30 @@ class CatalogueDetailView(DetailView):
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         context['user_profile'] = current_user
         all_bids = Bid.objects.filter(catalogue_name=context['catalogue'])
-        high_bid_on_catalogue = all_bids.order_by('bid_amount').first()
-        user_bids_on_catalogue = all_bids.filter(
-            bidder=self.request.user).first()
 
+        # Get the overall highest bid/quote on this catalogue
+        high_bid_on_catalogue = all_bids.order_by('bid_amount').first()
         if high_bid_on_catalogue:
             max_bid = high_bid_on_catalogue.bid_amount
         else:
-            max_bid = 'No bids yet'
-
+            if context['catalogue'].strategy != 'quotes':
+                max_bid = 'No bids yet'
+            else:
+                max_bid = 'No quotes yet'
+        # Get the current users current bid/quote on this catalogue
+        user_bids_on_catalogue = all_bids.filter(
+            bidder=self.request.user).first()
         if user_bids_on_catalogue:
             current_user_high = user_bids_on_catalogue.bid_amount
         else:
-            current_user_high = "You haven't placed any bids on this yet."
+            if context['catalogue'].strategy != 'quotes':
+                current_user_high = "You haven't placed any bids on this yet."
+            else:
+                current_user_high = "You haven't quoted a price on this yet."
 
         context['max_bid'] = max_bid
         context['current_user_high'] = current_user_high
+        # Get the catalogue detail file
         try:
             catalogue_file = CatalogueFile.objects.get(
                 catalogue_name=context['catalogue'])
@@ -87,6 +113,14 @@ class CatalogueDetailView(DetailView):
             context['catalogue_file'] = catalogue_file
         except:
             context['file_present'] = False
+        #  Find out if the current user has paid the token fee
+        try:
+            broker_payment = Order.objects.get(
+                owner=current_user, catalogue=context['catalogue'], payment_status=PaymentStatus.SUCCESS)
+            context['payment'] = True
+            context['order_detail'] = broker_payment
+        except:
+            context['payment'] = False
         return context
 
 
@@ -95,6 +129,7 @@ class UserCatalogueView(LoginRequiredMixin, ListView):
 
     context_object_name = 'catalogues'
     template_name = 'marketplace/user_catalogue.html'
+    paginate_by = 5
 
     def get_queryset(self):
         try:
@@ -106,8 +141,15 @@ class UserCatalogueView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         context['user_profile'] = current_user
-
+        if self.request.GET.get('paginate_by'):
+            context['paginate_by'] = self.request.GET.get('paginate_by')
+        else:
+            context['paginate_by'] = self.paginate_by
         return context
+
+    def get_paginate_by(self, queryset):
+
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -115,6 +157,7 @@ class UserBidView(LoginRequiredMixin, ListView):
 
     context_object_name = 'bids'
     template_name = 'marketplace/user_bids.html'
+    paginate_by = 5
 
     def get_queryset(self):
         try:
@@ -126,8 +169,15 @@ class UserBidView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         context['user_profile'] = current_user
-
+        if self.request.GET.get('paginate_by'):
+            context['paginate_by'] = self.request.GET.get('paginate_by')
+        else:
+            context['paginate_by'] = self.paginate_by
         return context
+
+    def get_paginate_by(self, queryset):
+
+        return self.request.GET.get('paginate_by', self.paginate_by)
 
 
 @login_required

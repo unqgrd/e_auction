@@ -143,7 +143,8 @@ class UserUpdateView(View):
         if form.is_valid():
             # print('form_valid')
             form.save()
-            return HttpResponseRedirect(reverse('registration:profile_view', args=pk))
+            print('here')
+            return HttpResponseRedirect(reverse('registration:profile_view', kwargs={'pk': pk}))
         return render(request, 'registration/edit_profile.html', {'form': form, 'user_profile': current_user})
 
 

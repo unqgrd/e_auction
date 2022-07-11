@@ -18,6 +18,7 @@ class Catalogue(models.Model):
     strategy_choices = (("ascending", 'low to high'),
                         ("descending", 'high to low'), ("quotes", 'get quotation'))
     strategy = models.CharField(max_length=10, choices=strategy_choices)
+    broker_fees = models.FloatField(default=0)
 
     def auction_status(self):
         now = timezone.now()

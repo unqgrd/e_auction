@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -166,3 +167,5 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 RAZORPAY_KEY_ID = 'rzp_test_tT2hzmFfmtMOvu'
 RAZORPAY_KEY_SECRET = 'hwuq9erOwu8StxjSaktOwOi2'
+
+# Pagination

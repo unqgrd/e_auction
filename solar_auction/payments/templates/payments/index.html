@@ -1,0 +1,15 @@
+{% extends 'registration/base.html' %}
+{% block title %}
+    Proceed to Payment
+{% endblock %}
+{% block content %}
+<form action="{% url 'payments:payment' catalogue.slug %}" method="POST">
+        {% csrf_token %}
+        <p>The brokerage amount will be : {{catalogue.broker_fees}} INR.</p>
+        <p>You will be redirected to Razorpay payments page.</p>
+        <a class="reject-button" style="display:inline" href="{% url 'marketplace:catalogue_detail' catalogue.slug %}">No, Go back</a>
+        <button style="display:inline" type="submit">Pay</button>
+        
+        
+    </form>
+{% endblock %}
