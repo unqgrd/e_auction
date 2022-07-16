@@ -17,18 +17,26 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from payments.models import Order
 from payments.constants import PaymentStatus
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+
 # Create your views here.
-
-
 @method_decorator(login_required, name='dispatch')
 class CatalogueListView(ListView):
     model = Catalogue
     context_object_name = 'catalogues'
     template_name = 'marketplace/catalogue_list.html'
     paginate_by = 5
+    ordering = ['end_date']
 
     def get_queryset(self):
-        return Catalogue.objects.filter(admin_approved=True, end_date__gt=timezone.now()).order_by('end_date')
+        if self.request.GET.get('ordering'):
+            ordering = self.request.GET.get('ordering')
+        else:
+            ordering = 'end_date'
+
+        query_set = Catalogue.objects.filter(
+            admin_approved=True, end_date__gt=timezone.now()).order_by(ordering)
+        return query_set
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -38,6 +46,12 @@ class CatalogueListView(ListView):
             context['paginate_by'] = self.request.GET.get('paginate_by')
         else:
             context['paginate_by'] = self.paginate_by
+
+        if self.request.GET.get('ordering'):
+            context['ordering'] = self.request.GET.get('ordering')
+        else:
+            context['ordering'] = self.ordering
+
         return context
 
     def get_paginate_by(self, queryset):
@@ -182,19 +196,34 @@ class UserBidView(LoginRequiredMixin, ListView):
 
 @login_required
 def addItemView(request):
+    error_list = []
     if request.FILES:
         file_form = CatalogueFileForm(request.POST, request.FILES)
+    else:
+        file_form = CatalogueFileForm()
+
     if request.method == 'POST':
         form = CatalogueForm(request.POST)
+        specifications = request.POST.getlist('field_name[]')
+        specification_values = request.POST.getlist('selected_ids[]')
+        if len(specifications) != len(specification_values):
+            error_list.append(
+                'Please choose only one parameter for technical specifications.')
+        if form.is_valid() and len(specifications) == len(specification_values):
+            technical_specifications = {}
+            print(request.POST)
 
-        if form.is_valid():
+            for n in range(len(specifications)):
+                technical_specifications[specifications[n]
+                                         ] = specification_values[n]
 
             new_catalogue = Catalogue(name=form.cleaned_data['name'],
                                       owner=request.user,
                                       details=form.cleaned_data['details'],
 
                                       end_date=form.cleaned_data['end_date'],
-                                      starting_bid=form.cleaned_data['starting_bid'], strategy=form.cleaned_data['strategy'],
+                                      starting_bid=form.cleaned_data['starting_bid'], strategy=form.cleaned_data[
+                                          'strategy'], tech_specs=technical_specifications,
 
                                       )
             new_catalogue.save()
@@ -208,7 +237,7 @@ def addItemView(request):
         form = CatalogueForm()
         file_form = CatalogueFileForm()
     user_profile = UserProfileInfo.objects.get(user=request.user)
-    return render(request, 'marketplace/add_item.html', {'form': form, 'user': request.user, 'user_profile': user_profile, 'file_form': file_form})
+    return render(request, 'marketplace/add_item.html', {'form': form, 'user': request.user, 'user_profile': user_profile, 'file_form': file_form, 'error_list': error_list})
 
 
 @login_required
@@ -227,15 +256,28 @@ def addBidView(request, slug):
     else:
         current_value = users_bid[0].bid_amount
         user_bid_status = 'Bid'
-    # print(current_value)
+    print(current_value)
     if request.method == 'POST':
+        specification_values = request.POST.getlist('selected_ids[]')
+        bidder_specs = {}
+        n = 0
+
+        for key in catalogue.tech_specs:
+
+            bidder_specs[key] = specification_values[n]
+            n += 1
+
         if user_bid_status == 'Bid':
             existing_bid = Bid.objects.get(
                 catalogue_name=catalogue, bidder=request.user)
+
             form = BidForm(request.POST, instance=existing_bid)
             if form.is_valid():
                 if (form.cleaned_data['bid_amount'] < current_value and strategy == 'descending') or (form.cleaned_data['bid_amount'] > current_value and strategy == 'ascending') or (strategy == 'quotes'):
+                    existing_bid.tech_specs = bidder_specs
+
                     form.save()
+                    existing_bid.save()
                     return HttpResponseRedirect(reverse('marketplace:catalogue_detail', kwargs={'slug': slug}))
 
             return HttpResponseRedirect(reverse('marketplace:add_bid', kwargs={'slug': slug}))
@@ -246,7 +288,7 @@ def addBidView(request, slug):
             if form.is_valid():
                 if (form.cleaned_data['bid_amount'] < current_value and strategy == 'descending') or (form.cleaned_data['bid_amount'] > current_value and strategy == 'ascending') or (strategy == 'quotes'):
                     new_bid = Bid(catalogue_name=catalogue, bidder=request.user,
-                                  bid_amount=request.POST['bid_amount'])
+                                  bid_amount=request.POST['bid_amount'], tech_specs=bidder_specs)
                     new_bid.save()
                     form = BidForm(request.POST, instance=new_bid)
                     form.save()
@@ -256,7 +298,7 @@ def addBidView(request, slug):
     else:
         form = BidForm()
 
-    return render(request, 'marketplace/add_bid.html', {'form': form, 'current_value': current_value, 'user_bid_status': user_bid_status,  'user_profile': current_user, 'strategy': strategy})
+    return render(request, 'marketplace/add_bid.html', {'form': form, 'current_value': current_value, 'user_bid_status': user_bid_status,  'user_profile': current_user, 'strategy': strategy, 'catalogue': catalogue})
 
 
 @login_required
@@ -293,6 +335,20 @@ class SearchView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        current_user = UserProfileInfo.objects.get(user=self.request.user)
+        context['user_profile'] = current_user
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class BidDetailView(DetailView):
+    model = Bid
+    template_name = 'marketplace/bid_detail.html'
+    context_object_name = 'bid'
+
+    def get_context_data(self, **kwargs):
+        context = super(BidDetailView, self).get_context_data(**kwargs)
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         context['user_profile'] = current_user
 

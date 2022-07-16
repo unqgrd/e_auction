@@ -43,7 +43,7 @@ def index(request):
         if user_status:
             return HttpResponseRedirect(reverse('administration:admin_index'))
         else:
-            return HttpResponseRedirect(reverse('registration:profile_view', kwargs={"pk": request.user.id}))
+            return HttpResponseRedirect(reverse('registration:profile_view'))
     else:
         return HttpResponseRedirect(reverse('registration:user_login'))
 
@@ -127,25 +127,31 @@ class UserProfileView(DetailView):
 
         return context
 
+    def get_object(self, *args, **kwargs):
+        return UserProfileInfo.objects.get(user=self.request.user)
+
 
 @method_decorator(login_required, name='dispatch')
 class UserUpdateView(View):
-    def get(self, request, pk):
-        existing_detail = UserProfileInfo.objects.get(pk=pk)
+    def get(self, request):
+        existing_detail = UserProfileInfo.objects.get(pk=self.request.user.id)
         form = UserProfileInfoForm(instance=existing_detail)
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         return render(request, 'registration/edit_profile.html', {'form': form, 'user_profile': current_user})
 
-    def post(self, request, pk):
-        existing_detail = UserProfileInfo.objects.get(pk=pk)
+    def post(self, request):
+        existing_detail = UserProfileInfo.objects.get(pk=self.request.user.id)
         form = UserProfileInfoForm(request.POST, instance=existing_detail)
         current_user = UserProfileInfo.objects.get(user=self.request.user)
         if form.is_valid():
             # print('form_valid')
             form.save()
-            print('here')
-            return HttpResponseRedirect(reverse('registration:profile_view', kwargs={'pk': pk}))
+            # print('here')
+            return HttpResponseRedirect(reverse('registration:profile_view'))
         return render(request, 'registration/edit_profile.html', {'form': form, 'user_profile': current_user})
+
+    def get_object(self, *args, **kwargs):
+        return UserProfileInfo.objects.get(user=self.request.user)
 
 
 def verify_email(request, token):
@@ -197,15 +203,15 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
 
 
 class DocumentsUploadView(View):
-    def get(self, request, pk):
-        current_user = User.objects.get(pk=pk)
+    def get(self, request):
+        current_user = User.objects.get(pk=self.request.user.id)
         current_user_profile = UserProfileInfo.objects.get(user=current_user)
         form = DocumentForm()
 
         return render(request, 'registration/documents_upload.html', {'form': form, 'user_profile': current_user_profile})
 
-    def post(self, request, pk):
-        current_user = User.objects.get(pk=pk)
+    def post(self, request):
+        current_user = User.objects.get(pk=self.request.user.id)
         current_user_profile = UserProfileInfo.objects.get(user=current_user)
         form = DocumentForm(request.POST, request.FILES)
 

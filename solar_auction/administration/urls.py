@@ -26,6 +26,8 @@ urlpatterns = [
          views.user_action, name='user_action'),
     path('finished_auctions', views.AuctionOverView.as_view(),
          name='finished_auctions'),
+    path('orders_list', views.OrdersView.as_view(),
+         name='user_orders'),
     #     path('logs', views.LogsView.as_view(),
     #          name='audit_logs'),
 

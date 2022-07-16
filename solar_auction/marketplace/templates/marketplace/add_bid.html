@@ -27,6 +27,27 @@
   {% endif %}
   <form method="POST">
     {% csrf_token %}
+    {% if catalogue.tech_specs %}
+            <p>Please confirm these Technical specifications</p> 
+            
+            <ol>
+                {% for key,value in catalogue.tech_specs.items %}
+                    <li>
+                      {% if value == 'compulsory' %}
+                        {{key}}
+                        <label for="item">Yes</label>
+                        <input name="selected_ids[]" type="checkbox" value="True" id="item"/>&nbsp&nbsp
+                        <label for="item">No</label>
+                        <input name="selected_ids[]" type="checkbox" value="False" id="item"/>&nbsp&nbsp
+                      {% else %}
+                        <label for="item">{{key}}</label>
+                        <input name="selected_ids[]" type="text" value="" id="item"/>&nbsp&nbsp
+                        
+                      {% endif %} 
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
     {% for field in form %}
     <p>
       {% if strategy == 'quotes' and field == form.bid_amount %}

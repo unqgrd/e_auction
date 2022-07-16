@@ -48,7 +48,7 @@
 			<ul class="nav navbar-nav navbar-right">
         
 				<li>
-                    <a  style="color: #fff" href="{% url 'registration:profile_view' user.id %}"> Welcome {{user.username}} </a>
+                    <a  style="color: #fff" href="{% url 'registration:profile_view' %}"> Welcome {{user.username}} </a>
                 </li>
 			</ul>
 		{% endif %}
@@ -103,6 +103,18 @@
                 <a href="{% url 'administration:finished_auctions' %}">Finished Auctions</a>
               </li>
               <li>
+                <a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Orders</a>
+                <ul class="collapse list-unstyled" id="orderSubmenu">
+                  <li>
+                    <a href="{% url 'administration:user_orders' %}">Successful orders</a>
+                  </li>
+                  <li>
+                    <a href="#"></a>
+                  </li>
+                  
+                </ul>
+              </li>
+              <li>
                 <a href="{% url 'admin:index' %}">Audit Log</a>
               </li>
             {% elif user_profile.admin_approved %}
@@ -116,11 +128,14 @@
                 <a href="{% url 'marketplace:user_bids' %}">My bids</a>
               </li>
               <li>
+                <a href="{% url 'payments:user_orders' %}">My orders</a>
+              </li>
+              <li>
                 <a href="{% url 'marketplace:history_catalogue' %}">Auction history</a>
               </li>
             {% else %}
               <li>
-                <a href="{% url 'registration:upload_document' user.id %}">Upload documents</a>
+                <a href="{% url 'registration:upload_document' %}">Upload documents</a>
               </li>
             {% endif %}
           </ul>

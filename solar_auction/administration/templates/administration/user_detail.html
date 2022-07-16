@@ -13,16 +13,31 @@
                 
                 <div class="container">
                     {% if user_file_present %}
+                        <button id="button" onclick="showhide()">Show user files</button>
+                        
+                        
+                        <div class="container" id="toggalable" style="display:none;">
                         <p>Proof of Identity</p>
                         <embed src="{{user_files.proof_of_identity.url}}" width="1000" height="375" type="application/pdf">
+                        
+                        
                         <br>
                         <br>
+                        
+                        
                         <p>Proof of Address</p>
                         <embed src="{{user_files.proof_of_address.url}}" width="1000" height="375" type="application/pdf">
+                        
+                        
                         <br>
                         <br>
+                        
+                        
                         <p>Proof of GSTIN</p>
                         <embed src="{{user_files.proof_of_gst.url}}" width="1000" height="375" type="application/pdf">
+                        </div>
+                        <br>
+                        <br>
         
                     {% endif %}
                 </div>

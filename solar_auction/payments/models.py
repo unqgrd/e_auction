@@ -7,7 +7,8 @@ from .constants import PaymentStatus
 
 
 class Order(models.Model):
-    owner = models.ForeignKey(UserProfileInfo, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        UserProfileInfo, on_delete=models.CASCADE, verbose_name="customer")
     catalogue = models.ForeignKey(Catalogue, on_delete=models.CASCADE)
     fee_amount = models.FloatField()
     payment_status = models.CharField(
@@ -16,8 +17,8 @@ class Order(models.Model):
     payment_id = models.CharField(max_length=100)
     signature_id = models.CharField(max_length=100)
 
-    # def __str__(self):
-    #     return self.owner + ' on ' + self.catalogue + ' ' + self.payment_status
+    def __str__(self):
+        return str(self.owner) + ' on ' + str(self.catalogue) + ' ' + str(self.payment_status)
 
 
 auditlog.register(Order)

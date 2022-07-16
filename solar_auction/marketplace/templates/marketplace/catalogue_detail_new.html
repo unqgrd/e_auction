@@ -23,6 +23,17 @@
                 Get Quotations
             {% endif %}
         </p>
+        {% if catalogue.tech_specs %}
+            <p>Technical specifications</p> 
+            
+            <ol>
+                {% for key,value in catalogue.tech_specs.items %}
+                    <li>
+                        {{key}} ({{value}})  
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
         <p>{% if catalogue.auction_status %}On Auction{% else %}Auction over{% endif %}</p>
         {% if file_present %}
             <button id="button" onclick="showhide()">Additional customer requirements</button>

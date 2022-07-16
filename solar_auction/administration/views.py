@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from razorpay import Order
 from registration.models import UserProfileInfo, Documents
 from marketplace.models import Catalogue, CatalogueFile
 from django.http import Http404, HttpResponseRedirect
@@ -12,6 +13,8 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from auditlog.models import LogEntry
 from django.views.decorators.clickjacking import xframe_options_exempt
+from payments.models import Order
+from payments.constants import PaymentStatus
 
 
 @staff_member_required
@@ -161,7 +164,14 @@ class DocumentsUploadedView(ListView):
 
     def get_queryset(self):
         try:
-            return UserProfileInfo.objects.filter(documents_uploaded=False)
+            user_list = User.objects.filter(is_active=True)
+            profile_list = []
+            for user in user_list:
+                user_profile = UserProfileInfo.objects.get(user=user)
+                if not user_profile.documents_uploaded:
+                    profile_list.append(user_profile)
+
+            return profile_list
         except:
             raise Http404()
 
@@ -265,3 +275,12 @@ def catalogue_action(request, slug):
 #     model = LogEntry
 #     template_name = 'administration/audit_log.html'
 #     context_object_name = 'logs'
+
+@method_decorator(staff_member_required, name='dispatch')
+class OrdersView(ListView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'administration/order_list.html'
+
+    def get_queryset(self):
+        return Order.objects.filter(payment_status=PaymentStatus.SUCCESS)

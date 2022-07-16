@@ -67,6 +67,7 @@
         {% endif %}
     {% comment %} </div> {% endcomment %}
     </div>
+<div class="container">
 {% if is_paginated %}
         <div class="pagination">
             
@@ -87,12 +88,14 @@
     <br>
     
 <form action="" method="get">
+    Show 
     <select name="paginate_by">
-        <option>2</option>
-        <option>3</option>
-        <option selected>5</option>
-        <option>10</option>
+        <option {% if paginate_by == '2' %}selected{% endif %}>2</option>
+        <option {% if paginate_by == '3' %}selected{% endif %}>3</option>
+        <option {% if paginate_by == '5' or paginate_by == 5 %}selected{% endif %}>5</option>
+        <option {% if paginate_by == '10' %}selected{% endif %}>10</option>
     </select>
     <input type="submit" value="Results/page">
 </form>
+</div>
 {% endblock %}

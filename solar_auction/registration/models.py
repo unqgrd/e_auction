@@ -41,6 +41,9 @@ class Documents(models.Model):
     proof_of_address = models.FileField(upload_to='files/')
     proof_of_gst = models.FileField(upload_to='files/')
 
+    class Meta:
+        verbose_name_plural = 'User Documents'
+
     def __str__(self):
         return self.user.username
 

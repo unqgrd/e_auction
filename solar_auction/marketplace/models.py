@@ -12,13 +12,14 @@ class Catalogue(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     details = models.CharField(max_length=1024)
     end_date = models.DateTimeField()
-    starting_bid = models.PositiveIntegerField(blank=True, null=True)
+    starting_bid = models.PositiveIntegerField(default=0)
     admin_approved = models.BooleanField(default=False)
     slug = models.SlugField(unique=True, db_index=True)
     strategy_choices = (("ascending", 'low to high'),
                         ("descending", 'high to low'), ("quotes", 'get quotation'))
     strategy = models.CharField(max_length=10, choices=strategy_choices)
     broker_fees = models.FloatField(default=0)
+    tech_specs = models.JSONField(blank=True, null=True)
 
     def auction_status(self):
         now = timezone.now()
@@ -42,10 +43,13 @@ class Bid(models.Model):
     catalogue_name = models.ForeignKey(Catalogue, on_delete=models.CASCADE)
     bid_amount = models.PositiveIntegerField()
     bidder = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    tech_specs = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return 'Bid amount '+str(self.bid_amount) + ' on ' + self.catalogue_name.name
 
+    
 
 class CatalogueFile(models.Model):
     catalogue_name = models.ForeignKey(Catalogue, on_delete=models.CASCADE)

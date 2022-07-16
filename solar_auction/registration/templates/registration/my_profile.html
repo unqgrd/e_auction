@@ -20,7 +20,7 @@
         <p>GSTIN: {{ userprofile.organization_gstin }}</p>
         <p>CIN: {{ userprofile.organization_cin }}</p>
     </div>
-        <form style="max-width: 7rem;" action="{% url 'registration:user_update' userprofile.id%}" method="GET">
+        <form style="max-width: 7rem;" action="{% url 'registration:user_update' %}" method="GET">
                                 {% csrf_token %}
                                 <button id="approve-btn" type="submit">Edit</button>
         </form>

@@ -11,6 +11,8 @@ urlpatterns = [
          name='catalogue_detail'),
     path('user/catalogues/', views.UserCatalogueView.as_view(),
          name='user_catalogue'),
+     path('bid_detail/<pk>/', views.BidDetailView.as_view(),
+         name='bid_detail'),
     path('user/bids/', views.UserBidView.as_view(), name='user_bids'),
     path('user/add_item', views.addItemView, name='add_item'),
     path('<slug>/add_bid/', views.addBidView, name='add_bid'),

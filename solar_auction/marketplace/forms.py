@@ -29,8 +29,9 @@ class BidForm(forms.ModelForm):
 
 class CatalogueFileForm(forms.ModelForm):
     file_name = forms.FileField(
-        label='Specific criteria requirements', required=False)
+        label='Additional Details', required=False)
 
     class Meta:
         model = models.CatalogueFile
         fields = ('file_name',)
+

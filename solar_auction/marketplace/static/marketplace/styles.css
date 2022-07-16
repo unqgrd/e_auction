@@ -58,3 +58,7 @@ select option:checked {
   color: #4a1418;
 }
 
+.add_spec_button{
+ width:3%;
+ 
+}

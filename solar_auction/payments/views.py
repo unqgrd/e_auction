@@ -9,6 +9,9 @@ from .models import Order
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .constants import PaymentStatus
+from django.views.generic import ListView
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -107,3 +110,22 @@ def callback(request):
         order.save()
         context_dict['status'] = order.payment_status
         return render(request, "payments/callback.html", context_dict)
+
+
+@method_decorator(login_required, name='dispatch')
+class UserOrderView(ListView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'payments/user_order_list.html'
+
+    def get_queryset(self):
+        current_user = UserProfileInfo.objects.get(user=self.request.user)
+        user_orders = Order.objects.filter(
+            owner=current_user, payment_status=PaymentStatus.SUCCESS)
+        return user_orders
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_user = UserProfileInfo.objects.get(user=self.request.user)
+        context['user_profile'] = current_user
+        return context

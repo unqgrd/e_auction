@@ -1,0 +1,25 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+  Bid Detail
+{% endblock %}
+
+{% block content %}
+    
+    {% if bid.bidder == user %}
+        <p>Name: {{bid.catalogue_name}}</p>
+        <p>Amount: {{bid.bid_amount}}</p>
+        {% if bid.tech_specs %}
+                <p>Technical specifications</p> 
+                
+                <ol>
+                    {% for key,value in bid.tech_specs.items %}
+                        <li>
+                            {{key}} ({{value}})  
+                        </li>
+                    {% endfor %}
+                </ol>
+        {% endif %}
+    {% endif %}
+{% endblock %}

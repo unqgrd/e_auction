@@ -11,11 +11,16 @@
 <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
 
 <link rel="stylesheet" href="{% static 'marketplace/styles.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 
 {% endblock %}
 {% block content %}
     
   <div class="container ">
+    {% for error in error_list %}
+      <h4 style="color:red;">{{error}}</h4>
+    {% endfor %}
     <form class="large-form" method="POST">
       {% csrf_token %}
       {{ form.media }}
@@ -47,14 +52,55 @@
         {% endif %}
 
       {% endfor %}
-
+      <br>
+      
+      <div class="field_wrapper">
+        <p>Technical specifications</p>
+        <div>
+          <input type="text" name="field_name[]" value=""/>
+          <a href="javascript:void(0);" class="add_button" title="Add field"><img class="add_spec_button" src="{% static 'images/plus.png' %}"></a>
+          <br>
+          <label for="compulsory">Compulsory</label>
+          <input name="selected_ids[]" type="checkbox" value="compulsory" id="compulsory" checked/>&nbsp&nbsp
+          <label for="optional">Optional</label>
+          <input name="selected_ids[]" type="checkbox" value="optional" id="optional"/>
+          
+      </div>
+      </div>
+      <br>
       {{file_form|crispy}}
       <br>
       <br>
       <button>Add</button>
     </form>
+    
   </div>
 
+  <script type="text/javascript">
+$(document).ready(function(){
+    var maxField = 10; //Input fields increment limitation
+    var addButton = $('.add_button'); //Add button selector
+    var wrapper = $('.field_wrapper'); //Input field wrapper
+    var fieldHTML = '<div><input type="text" name="field_name[]" value=""/>&nbsp<a href="javascript:void(0);" class="remove_button"><img class="add_spec_button" src="{% static "images/minus.png" %}"></a><br><label for="compulsory">Compulsory</label>&nbsp<input name="selected_ids[]" type="checkbox" value="compulsory" id="compulsory" checked/>&nbsp&nbsp<label for="optional">Optional</label>&nbsp<input name="selected_ids[]" type="checkbox" value="optional" id="optional"/></div>'; //New input field html 
+    var x = 1; //Initial field counter is 1
+    
+    //Once add button is clicked
+    $(addButton).click(function(){
+        //Check maximum number of input fields
+        if(x < maxField){ 
+            x++; //Increment field counter
+            $(wrapper).append(fieldHTML); //Add field html
+        }
+    });
+    
+    //Once remove button is clicked
+    $(wrapper).on('click', '.remove_button', function(e){
+        e.preventDefault();
+        $(this).parent('div').remove(); //Remove field html
+        x--; //Decrement field counter
+    });
+});
+</script>
 {% endblock %}
 {% block footer %}
   

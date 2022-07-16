@@ -1,0 +1,33 @@
+{% extends 'registration/base.html' %}
+{% block title %}
+    All orders
+{% endblock %}
+{% block content %}
+    {% if orders %}
+        <table class="table table-hover table-striped" id="sortable">
+            <thead>
+                <tr>
+                    <th scope="col" onclick="sortTable(0)">Catalogue Name</th>
+                    <th scope="col" onclick="sortTable(1)">User</th>
+                    <th scope="col" onclick="sortTable(2)">Amount</th>
+                    
+                    <th scope="col" onclick="sortTable(3)">Order Id</th>
+                    <th scope="col" onclick="sortTable(4)">Payment Id</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td><a href="{% url 'marketplace:catalogue_detail' order.catalogue.slug %}">{{order.catalogue}}</a></td>
+                        <td>{{order.owner}}</td>
+                        <td>{{order.fee_amount}}</td>
+                        
+                        <td>{{order.order_id}}</td>
+                        <td>{{order.payment_id}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
